@@ -1,3 +1,6 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 from flask import Flask, render_template, request, jsonify, url_for, Response
 import pandas as pd
 import numpy as np
@@ -155,6 +158,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
