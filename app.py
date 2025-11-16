@@ -5,9 +5,6 @@ import joblib
 import json
 from tensorflow.keras.models import load_model
 from tensorflow.keras.metrics import MeanSquaredError,MeanAbsoluteError
-from pyngrok import ngrok, conf
-
-conf.get_default().ngrok_path = r"C:\Users\meros\AppData\Local\Microsoft\WindowsApps\ngrok.exe"
 
 model_block = load_model("lstm_crop_yield_model.h5",compile=False)
 scaler_block = joblib.load("scaler.pkl")
@@ -26,27 +23,6 @@ crops = sorted(df['Crop'].unique())
 blocks = sorted(df['Block_name'].unique())
 
 app = Flask(__name__)
-username = "Merin Rose"
-password = "Me*Rose3142"
-
-def check_auth(username, password):
-    """Check if username and password are correct."""
-    return username == username and password == password
-
-def authenticate():
-    """Send 401 response to prompt for login"""
-    return Response(
-        'Login required.\n', 401,
-        {'WWW-Authenticate': 'Basic realm="Login Required"'}
-    )
-
-@app.before_request
-def require_auth():
-    """Require password for all routes"""
-    auth = request.authorization
-    if not auth or not check_auth(auth.username, auth.password):
-        return authenticate()
-
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -177,10 +153,7 @@ def predict_district():
 
 
 if __name__ == '__main__':
-    port = 5000
-    public_url = ngrok.connect(port)
-    print(" * ngrok tunnel:", public_url)
-
     # Start Flask app
-    app.run(port=port)
+    app.run()
+
 
