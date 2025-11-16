@@ -5,3 +5,4 @@ joblib
 tensorflow-cpu
 pyngrok
 scikit-learn
+gunicorn
