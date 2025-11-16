@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockwise Crop Prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(rgba(47, 44, 44, 0.582), rgba(56, 54, 54, 0.3)),
+                  url('static/block.avif') no-repeat center center/cover;
+    }
+
+    .form-container {
+      background: rgba(118, 90, 68, 0.6);
+      padding: 20px 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 90%;
+      backdrop-filter: blur(4px);
+      color: #fff;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #322b11;
+      font-weight: 600;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+      background: rgba(118, 90, 68, 0.2);
+      color: rgb(25, 18, 14);
+      transition: 0.3s;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 16px;
+      pointer-events: none;
+      background: transparent;
+      padding: 0 5px;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      top: -10px;
+      font-size: 13px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: rgb(75, 51, 33);
+      box-shadow: 0 0 8px rgba(31, 21, 14, 0.6);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(90deg, rgb(75, 51, 33), rgba(31, 21, 14, 0.6));
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Blockwise Crop Yield Prediction</h2>
+    <form id="predictForm">
+      <!-- Year -->
+      <div class="form-group">
+        <select id="Year" name="Year" required>
+          <option value="" disabled selected hidden></option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+        <label for="Year">Year</label>
+      </div>
+
+      <!-- Crop -->
+      <div class="form-group">
+        <select id="Crop" name="Crop" required>
+          <option value="" disabled selected hidden></option>
+          <option value="Paddy">Paddy</option>
+          <option value="Tapioca">Tapioca</option>
+          <option value="Banana">Banana</option>
+          <option value="Pepper">Pepper</option>
+        </select>
+        <label for="Crop">Crop</label>
+      </div>
+
+      <!-- Block -->
+      <div class="form-group">
+        <select id="Block_name" name="Block_name" required>
+          <option value="" disabled selected hidden></option>
+          <option value="Athiyannoor">Athiyannoor</option> <option value="Chirayinkeezhu">Chirayinkeezhu</option> <option value="Kilimanoor">Kilimanoor</option> <option value="Nedumangad">Nedumangad</option> <option value="Nemom">Nemom</option> <option value="Parassala">Parassala</option> <option value="Perumkadavila">Perumkadavila</option> <option value="Pothencode">Pothencode</option> <option value="Vamanapuram">Vamanapuram</option> <option value="Varkala">Varkala</option> <option value="Vellanad">Vellanad</option> <option value="Anchal">Anchal</option> <option value="Chadayamangalam">Chadayamangalam</option> <option value="Chavara">Chavara</option> <option value="Chittumala">Chittumala</option> <option value="Ithikkara">Ithikkara</option> <option value="Kottarakara">Kottarakara</option> <option value="Mukhathala">Mukhathala</option> <option value="Oachira">Oachira</option> <option value="Pathanapuram">Pathanapuram</option> <option value="Sasthamcotta">Sasthamcotta</option> <option value="Vettikavala">Vettikavala</option> <option value="Elanthoor">Elanthoor</option> <option value="Koipuram">Koipuram</option> <option value="Konni">Konni</option> <option value="Mallappally">Mallappally</option> <option value="Pandalam">Pandalam</option> <option value="Parakodu">Parakodu</option> <option value="Pulikeezh">Pulikeezh</option> <option value="Ranni">Ranni</option> <option value="Ambalapuzha">Ambalapuzha</option> <option value="Aryad">Aryad</option> <option value="Bharanikkavu">Bharanikkavu</option> <option value="Champakkulam">Champakkulam</option> <option value="Chengannur">Chengannur</option> <option value="Harippad">Harippad</option> <option value="Kanjikuzhy">Kanjikuzhy</option> <option value="Mavelikkara">Mavelikkara</option> <option value="Muthukulam">Muthukulam</option> <option value="Pattanakkad">Pattanakkad</option> <option value="Thycattussery">Thycattussery</option> <option value="Veliyanad">Veliyanad</option> <option value="Erattupetta">Erattupetta</option> <option value="Etumanoor">Etumanoor</option> <option value="Kaduthuruthy">Kaduthuruthy</option> <option value="Kanjirappally">Kanjirappally</option> <option value="Lalam">Lalam</option> <option value="Madappally">Madappally</option> <option value="Pallom">Pallom</option> <option value="Pampady">Pampady</option> <option value="Uzhavoor">Uzhavoor</option> <option value="Vaikom">Vaikom</option> <option value="Vazhoor">Vazhoor</option> <option value="Adimali">Adimali</option> <option value="Azhutha">Azhutha</option> <option value="Devikulam">Devikulam</option> <option value="Elamdesam">Elamdesam</option> <option value="Idukki">Idukki</option> <option value="Kattapana">Kattapana</option> <option value="Nedumkandam">Nedumkandam</option> <option value="Thodupuzha">Thodupuzha</option> <option value="Alangad">Alangad</option> <option value="Angamaly">Angamaly</option> <option value="Edappally">Edappally</option> <option value="Koovappady">Koovappady</option> <option value="Kothamangalam">Kothamangalam</option> <option value="Mulanthuruthy">Mulanthuruthy</option> <option value="Muvattupuzha">Muvattupuzha</option> <option value="Palluruthy">Palluruthy</option> <option value="Pampakuda">Pampakuda</option> <option value="Parakkadavu">Parakkadavu</option> <option value="Paravur">Paravur</option> <option value="Vadavucode">Vadavucode</option> <option value="Vazhakulam">Vazhakulam</option> <option value="Vypin">Vypin</option> <option value="Anthikad">Anthikad</option> <option value="Chalakudy">Chalakudy</option> <option value="Chavakkad">Chavakkad</option> <option value="Cherpu">Cherpu</option> <option value="Chowannur">Chowannur</option> <option value="Irinjalakuda">Irinjalakuda</option> <option value="Kodakara">Kodakara</option> <option value="Mala">Mala</option> <option value="Mathilakam">Mathilakam</option> <option value="Mullassery">Mullassery</option> <option value="Ollukkara">Ollukkara</option> <option value="Pazhayanoor">Pazhayanoor</option> <option value="Puzhakal">Puzhakal</option> <option value="Thalikulam">Thalikulam</option> <option value="Vellangallur">Vellangallur</option> <option value="Wadakkanchery">Wadakkanchery</option> <option value="Alathur">Alathur</option> <option value="Attappady">Attappady</option> <option value="Chittur">Chittur</option> <option value="Kollengode">Kollengode</option> <option value="Kuzhalmannam">Kuzhalmannam</option> <option value="Malampuzha">Malampuzha</option> <option value="Mannarkkad">Mannarkkad</option> <option value="Nemmara">Nemmara</option> <option value="Ottapalam">Ottapalam</option> <option value="Palakkad">Palakkad</option> <option value="Pattambi">Pattambi</option> <option value="Sreekrishnapuram">Sreekrishnapuram</option> <option value="Thrithala">Thrithala</option> <option value="Arecode">Arecode</option> <option value="Kalikavu">Kalikavu</option> <option value="Kondotty">Kondotty</option> <option value="Kuttippuram">Kuttippuram</option> <option value="Malappuram">Malappuram</option> <option value="Mankada">Mankada</option> <option value="Nilamboor">Nilamboor</option> <option value="Perintalmanna">Perintalmanna</option> <option value="Perumpadappa">Perumpadappa</option> <option value="Ponnani">Ponnani</option> <option value="Tanur">Tanur</option> <option value="Tirur">Tirur</option> <option value="Tirurangadi">Tirurangadi</option> <option value="Vengara">Vengara</option> <option value="Wandoor">Wandoor</option> <option value="Balussery">Balussery</option> <option value="Chelannur">Chelannur</option> <option value="Koduvally">Koduvally</option> <option value="Kozhikode">Kozhikode</option> <option value="Kunnamangalam">Kunnamangalam</option> <option value="Kunnummel">Kunnummel</option> <option value="Melady">Melady</option> <option value="Panthalayani">Panthalayani</option> <option value="Perambra">Perambra</option> <option value="Thodannur">Thodannur</option> <option value="Thuneri">Thuneri</option> <option value="Vatakara">Vatakara</option> <option value="Kalpetta">Kalpetta</option> <option value="Mananthawady">Mananthawady</option> <option value="Panamaram">Panamaram</option> <option value="Sulthanbathery">Sulthanbathery</option> <option value="Edakkad">Edakkad</option> <option value="Irikkur">Irikkur</option> <option value="Iritty">Iritty</option> <option value="Kalliassery">Kalliassery</option> <option value="Kannur">Kannur</option> <option value="Kuthuparamba">Kuthuparamba</option> <option value="Panoor">Panoor</option> <option value="Payyannur">Payyannur</option> <option value="Peravur">Peravur</option> <option value="Taliparamba">Taliparamba</option> <option value="Thalassery">Thalassery</option> <option value="Kanhangad">Kanhangad</option> <option value="Karaduka">Karaduka</option> <option value="Kasaragod">Kasaragod</option> <option value="Manjeswar">Manjeswar</option> <option value="Nileshwar">Nileshwar</option> <option value="Parappa">Parappa</option>
+          <!-- (You can keep your full list here) -->
+        </select>
+        <label for="Block_name">Block</label>
+      </div>
+
+      <button type="submit" class="btn">Predict Yield</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById("predictForm").addEventListener("submit", async function(e) {
+      e.preventDefault(); // prevent page reload
+
+      const formData = new FormData(this);
+
+      const response = await fetch("/blockwise/predict", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+
+      if (data.error) {
+        resultDiv.style.background = "rgba(255, 100, 100, 0.8)";
+        resultDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+      } else {
+        resultDiv.style.background = "rgba(255, 255, 255, 0.8)";
+        resultDiv.innerHTML = `
+          <h3>🌾 Prediction Result</h3>
+          <p><b>Crop:</b> ${data.crop}</p>
+          <p><b>Block:</b> ${data.block}</p>
+          <p><b>Target Year:</b> ${data.target_year}</p>
+          <p><b>Predicted Yield:</b> ${data.predicted_yield.toFixed(2)}</p>
+          <p><b>Used Years:</b> ${data.used_years.join(", ")}</p>
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+

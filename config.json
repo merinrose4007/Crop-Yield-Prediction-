@@ -1,0 +1,5 @@
+{
+    "sequence_length": 5,
+    "target_column": "Yield",
+    "year_column": "Year"
+}

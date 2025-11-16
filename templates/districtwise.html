@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blockwise Crop Prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(rgba(47, 44, 44, 0.582), rgba(56, 54, 54, 0.3)),
+                  url('static/block.avif') no-repeat center center/cover;
+    }
+
+    .form-container {
+      background: rgba(118, 90, 68, 0.6);
+      padding: 20px 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 90%;
+      backdrop-filter: blur(4px);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #322b11;
+      font-weight: 600;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+      background: rgba(118, 90, 68, 0.2); /* changed from white to semi-transparent */
+      color: rgb(25, 18, 14); /* text color for contrast */
+      transition: 0.3s;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: #fff; /* label color for contrast */
+      font-size: 16px;
+      pointer-events: none;
+      background: transparent; /* removed white behind label */
+      padding: 0 5px;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      top: -10px;
+      font-size: 13px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: rgb(75, 51, 33);
+      box-shadow: 0 0 8px rgba(31, 21, 14, 0.6);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(90deg, rgb(75, 51, 33), rgba(31, 21, 14, 0.6));
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Districtwise Crop Yield Prediction</h2>
+    <form id="districtPredictForm" action="/districtwise/predict" method="POST">
+      
+      <!-- Year -->
+      <div class="form-group">
+        <select id="Year" name="Year" required>
+          <option value="" disabled selected hidden></option>
+          <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+        </select>
+        <label for="Year">Year</label>
+      </div>
+
+      <!-- Crop -->
+      <div class="form-group">
+        <select id="Crop" name="Crop" required>
+          <option value="" disabled selected hidden></option>
+          <option value="Paddy">Paddy</option>
+          <option value="Tapioca">Tapioca</option>
+          <option value="Banana">Banana</option>
+          <option value="Pepper">Pepper</option>
+        </select>
+        <label for="Crop">Crop</label>
+      </div>
+
+      <!-- Block -->
+      <div class="form-group">
+        <select id="District" name="District" required>
+          <option value="" disabled selected hidden></option>
+          <option value="TRIVANDRUM">TRIVANDRUM</option>
+          <option value="KOLLAM">KOLLAM</option>
+          <option value="PATHANAMTHITTA">PATHANAMTHITTA</option>
+          <option value="ALAPPUZHA">ALAPPUZHA</option>
+          <option value="KOTTAYAM">KOTTAYAM</option>
+          <option value="IDUKKI">IDUKKI</option>
+          <option value="ERNAKULAM">ERNAKULAM</option>
+          <option value="THRISSUR">THRISSUR</option>
+          <option value="PALAKKAD">PALAKKAD</option>
+          <option value="MALAPPURAM">MALAPPURAM</option>
+          <option value="KOZHIKODE">KOZHIKODE</option>
+          <option value="WAYANAD">WAYANAD</option>
+          <option value="KANNUR">KANNUR</option>
+          <option value="KASARAGOD">KASARAGOD</option>
+        </select>
+        <label for="District">District</label>
+      </div>
+
+      <button type="submit" class="btn">Predict Yield</button>
+      <div id="districtResult" style="
+        display: none;
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      "></div>
+      <script>
+        document.getElementById("districtPredictForm").addEventListener("submit", async function(e) {
+          e.preventDefault(); // prevent page reload
+
+          const formData = new FormData(this);
+
+          const response = await fetch("/districtwise/predict", {
+            method: "POST",
+            body: formData
+          });
+
+          const data = await response.json();
+          const resultDiv = document.getElementById("districtResult");
+          resultDiv.style.display = "block";
+
+          if (data.error) {
+            resultDiv.style.background = "rgba(255, 100, 100, 0.8)";
+            resultDiv.innerHTML = `<strong>Error:</strong> ${data.error}`;
+          } else {
+            // Calculate adjusted yield (same logic as your Jinja template)
+            const adjustedYield = 
+              data.crop.toLowerCase() === "pepper" 
+              ? (data.predicted_yield).toFixed(2)
+              : (data.predicted_yield).toFixed(2);
+
+            resultDiv.style.background = "rgba(255, 255, 255, 0.8)";
+            resultDiv.innerHTML = `
+              <h3>
+                Predicted Yield for ${data.crop} in ${data.district} (${data.target_year}):
+                ${adjustedYield}
+              </h3>
+            `;
+          }
+        });
+      </script>
+
+    </form>
+  </div>
+</body>
+</html>
