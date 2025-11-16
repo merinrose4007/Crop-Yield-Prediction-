@@ -6,7 +6,7 @@ import json
 from tensorflow.keras.models import load_model
 from tensorflow.keras.metrics import MeanSquaredError,MeanAbsoluteError
 
-model_block = load_model("lstm_crop_yield_model.h5",compile=False)
+model_block = load_model("lstm_crop_yield_model.keras",compile=False)
 scaler_block = joblib.load("scaler.pkl")
 encoders = joblib.load("encoders.pkl")
 features_used = joblib.load("features.pkl")
@@ -86,7 +86,7 @@ def predict():
         "predicted_yield": float(predicted_yield),
         "used_years": input_years
     })
-MODEL_PATH = "crop_yield_model1.h5"
+MODEL_PATH = "crop_yield_model.keras"
 SCALER_PATH = "feature_scaler1.save"
 ENCODING_PATH = "encoding_info.json"
 DATA_PATH = "df_disrtict.csv"
@@ -155,5 +155,6 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
