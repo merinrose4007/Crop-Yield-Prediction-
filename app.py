@@ -27,6 +27,16 @@ df = pd.read_csv("cleaned_data.csv")
 crops = sorted(df['Crop'].unique())
 blocks = sorted(df['Block_name'].unique())
 
+X_dummy_block = np.zeros((1, seq_length, len(features_used) - 2)) 
+crop_dummy = np.zeros((1, seq_length))
+block_dummy = np.zeros((1, seq_length))
+
+try:
+    model_block.predict([crop_dummy, block_dummy, X_dummy_block], verbose=0)
+    print("✅ Block Model Pre-Warmed Successfully.")
+except Exception as e:
+    print(f"Warning: Failed to pre-warm block model: {e}")
+
 app = Flask(__name__)
 @app.route('/')
 def home():
@@ -160,6 +170,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
