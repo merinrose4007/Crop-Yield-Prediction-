@@ -35,7 +35,7 @@ try:
     model_block.predict([crop_dummy, block_dummy, X_dummy_block], verbose=0)
     print("✅ Block Model Pre-Warmed Successfully.")
 except Exception as e:
-    print(f"Warning: Failed to pre-warm block model: {e}")
+    print(f"Warning: Failed to pre-warm block model: {e}")
 
 app = Flask(__name__)
 @app.route('/')
@@ -170,6 +170,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
