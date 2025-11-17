@@ -27,7 +27,7 @@ df = pd.read_csv("cleaned_data.csv")
 crops = sorted(df['Crop'].unique())
 blocks = sorted(df['Block_name'].unique())
 
-X_dummy_block = np.zeros((1, seq_length, len(features_used) - 2)) 
+X_dummy_block = np.zeros((1, seq_length, len(features_used) - 2))
 crop_dummy = np.zeros((1, seq_length))
 block_dummy = np.zeros((1, seq_length))
 
@@ -170,6 +170,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
