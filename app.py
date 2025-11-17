@@ -32,8 +32,8 @@ crop_dummy = np.zeros((1, seq_length))
 block_dummy = np.zeros((1, seq_length))
 
 try:
-    model_block.predict([crop_dummy, block_dummy, X_dummy_block], verbose=0)
-    print("✅ Block Model Pre-Warmed Successfully.")
+    model_block.predict([crop_dummy, block_dummy, X_dummy_block], verbose=0)
+    print("✅ Block Model Pre-Warmed Successfully.")
 except Exception as e:
     print(f"Warning: Failed to pre-warm block model: {e}")
 
@@ -170,6 +170,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
