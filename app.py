@@ -13,21 +13,7 @@ from tensorflow.keras.metrics import MeanSquaredError,MeanAbsoluteError
 
 app = Flask(__name__)
 
-model_block = load_model("lstm_crop_yield_model.keras",compile=False)
-scaler_block = joblib.load("scaler.pkl")
-encoders = joblib.load("encoders.pkl")
-features_used = joblib.load("features.pkl")
 
-with open("config.json", "r") as f:
-    config = json.load(f)
-
-seq_length = config["sequence_length"]
-target_col = config["target_column"]
-year_col = config["year_column"]
-
-df = pd.read_csv("cleaned_data.csv")
-crops = sorted(df['Crop'].unique())
-blocks = sorted(df['Block_name'].unique())
 
 
 @app.route('/')
@@ -44,6 +30,21 @@ def dashboard():
     return render_template('dashboard.html')
 @app.route("/blockwise/predict", methods=["POST"])
 def predict():
+    model_block = load_model("lstm_crop_yield_model.keras",compile=False)
+    scaler_block = joblib.load("scaler.pkl")
+    encoders = joblib.load("encoders.pkl")
+    features_used = joblib.load("features.pkl")
+    
+    with open("config.json", "r") as f:
+        config = json.load(f)
+    
+    seq_length = config["sequence_length"]
+    target_col = config["target_column"]
+    year_col = config["year_column"]
+    
+    df = pd.read_csv("cleaned_data.csv")
+    crops = sorted(df['Crop'].unique())
+    blocks = sorted(df['Block_name'].unique())
     crop_name = request.form["Crop"]
     block_name = request.form["Block_name"]
     target_year = int(request.form["Year"])
@@ -162,6 +163,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
