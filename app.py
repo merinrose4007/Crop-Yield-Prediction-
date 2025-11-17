@@ -1,4 +1,6 @@
+# Add this line at the very top of your file
 import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0" # Disable oneDNN to help with stability/memory
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 from flask import Flask, render_template, request, jsonify, url_for, Response
@@ -8,6 +10,8 @@ import joblib
 import json
 from tensorflow.keras.models import load_model
 from tensorflow.keras.metrics import MeanSquaredError,MeanAbsoluteError
+
+app = Flask(__name__)
 
 model_block = load_model("lstm_crop_yield_model.keras",compile=False)
 scaler_block = joblib.load("scaler.pkl")
@@ -25,7 +29,7 @@ df = pd.read_csv("cleaned_data.csv")
 crops = sorted(df['Crop'].unique())
 blocks = sorted(df['Block_name'].unique())
 
-app = Flask(__name__)
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -158,6 +162,7 @@ def predict_district():
 if __name__ == '__main__':
     # Start Flask app
     app.run()
+
 
 
 
